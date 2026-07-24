@@ -1,0 +1,23 @@
+<h2>Pacientes</h2>
+
+<p *ngIf="cargando()">Cargando...</p>
+<p *ngIf="error()" style="color: red;">{{ error() }}</p>
+
+<table *ngIf="!cargando() && !error()">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Documento</th>
+      <th>Teléfono</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of pacientes()">
+      <td>{{ p.nombre }}</td>
+      <td>{{ p.apellido }}</td>
+      <td>{{ p.documento_identidad }}</td>
+      <td>{{ p.telefono }}</td>
+    </tr>
+  </tbody>
+</table>
