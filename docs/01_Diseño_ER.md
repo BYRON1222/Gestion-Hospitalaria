@@ -11,8 +11,6 @@ El dominio se dividió en 6 áreas funcionales para que el modelo sea defendible
 5. **Facturación y seguros** — Factura, DetalleFactura, Seguro
 6. **Acceso al sistema** — Usuario (login con roles)
 
-Esta separación es justo lo que un profesor busca al pedir "requerimientos clasificados": que el modelo refleje procesos reales del hospital, no solo tablas sueltas.
-
 ## 2. Diagrama Mermaid (ER)
 
 Pega esto tal cual en cualquier visor de Mermaid (mermaid.live, la extensión de VS Code, o directamente en Notion si tu plan lo soporta):
