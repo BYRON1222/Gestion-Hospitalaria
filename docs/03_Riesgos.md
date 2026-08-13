@@ -1,21 +1,14 @@
-# Identificación de Riesgos — Sistema de Gestión Hospitalaria
+# Riesgos Identificados — Sistema de Gestión Hospitalaria
 
-Cada riesgo tiene **Probabilidad** (Alta/Media/Baja), **Impacto** (Alto/Medio/Bajo) y una **estrategia de mitigación concreta** — no genérica ("tener cuidado" no es mitigación real, y un profesor lo nota).
-
-## Matriz de riesgos
-
-| ID | Riesgo | Categoría | Probabilidad | Impacto | Mitigación |
-|---|---|---|---|---|---|
-| R-01 | Exposición o filtración de datos clínicos de pacientes | Seguridad de datos | Media | Alto | Cifrado en tránsito (HTTPS) y en reposo para campos sensibles; control de acceso por rol; nunca loguear datos clínicos en texto plano |
-| R-02 | Doble asignación de la misma cama o del mismo horario médico | Integridad de datos | Media | Alto | Restricciones únicas a nivel de base de datos (constraint), no solo validación en frontend |
-| R-03 | Pérdida de datos por falla del servidor sin respaldo | Operativo | Baja | Alto | Respaldos automáticos periódicos de la base de datos y plan de restauración documentado |
-| R-04 | Desalineación entre el modelo ER y lo que realmente necesita el negocio hospitalario | Diseño / Alcance | Media | Medio | Validar el modelo con un flujo real de "paciente llega → cita → diagnóstico → receta → factura" antes de programar |
-| R-05 | Alcance del proyecto crece durante el desarrollo (agregar módulos no planeados) | Cronograma | Alta | Medio | Congelar el alcance MVP (los requerimientos "Must") antes de programar; todo lo demás queda para una segunda iteración |
-| R-06 | Inconsistencia entre backend (Python) y frontend (Angular) por cambios de API no comunicados | Técnico | Media | Medio | Definir contratos de API (esquemas Pydantic / OpenAPI) antes de programar el frontend |
-| R-07 | Falta de tiempo para probar todos los módulos antes de la entrega | Cronograma | Alta | Alto | Priorizar pruebas manuales de los flujos "Must" (RF-01, RF-04, RF-08, RF-11, RF-16, RF-18) sobre los "Could" |
-| R-08 | Un solo integrante concentra el conocimiento del backend o frontend (bus factor) | Operativo / Equipo | Media | Medio | Documentar decisiones clave en Notion a medida que se avanza, no al final |
-| R-09 | Uso de datos reales de pacientes en pruebas (problema ético/legal) | Cumplimiento / Ético | Baja | Alto | Usar exclusivamente datos ficticios/generados para demostraciones |
-
-## Cómo se priorizó
-
-Los riesgos con **Alta probabilidad + Alto impacto** (R-07) y **Alta probabilidad** en general (R-05, R-07) son los que más amenazan una entrega con poco tiempo — por eso el plan de trabajo de este mismo paquete asume el alcance mínimo (Must) primero.
+| Riesgo | Probabilidad | Impacto | Mitigación |
+|---|---|---|---|
+| Entrega no cumplida por tiempo limitado del curso | Alta | Alto | Priorizar MVP (Usuarios, Pacientes, Médicos, Citas, Consultas) antes de módulos secundarios |
+| Cambiar el ER después de generar el backend con IA | Media | Alto | Cerrar el diseño ER antes de generar código |
+| Integración con laboratorio clínico externo no disponible en entorno académico | Alta | Media | Simular la integración con un endpoint interno en vez de un servicio externo real |
+| MFA y firma electrónica añaden complejidad no esencial para la demo | Media | Media | Implementar versión simplificada (código de prueba, hash/token en vez de certificado real) |
+| Confusión entre stack pedido por el cliente (C#/Oracle) y el implementado (Python/Angular) | Media | Media | Documentar explícitamente la adaptación de stack en toda la documentación |
+| Exposición de datos sensibles de pacientes | Baja | Alto | No usar datos reales, cifrar contraseñas y campos sensibles, usar variables de entorno |
+| Reglas de negocio no validadas en backend (solo en frontend) | Media | Alto | Validar cada regla de negocio explícitamente en los servicios del backend |
+| Desincronización entre modelos backend y frontend Angular | Media | Media | Definir contratos de API antes de programar el frontend |
+| Errores de sintaxis / generación incompleta al usar herramientas de IA para generar código | Alta | Media | Probar cada módulo (levantar el servidor) inmediatamente después de generarlo, antes de seguir con el siguiente |
+| Límite de uso de herramientas de IA (Cursor) interrumpe el flujo de trabajo | Media | Media | Hacer commits frecuentes para no perder avance; tener plan B de corrección manual |

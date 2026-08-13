@@ -1,178 +1,197 @@
 # Diseño ER — Sistema de Gestión Hospitalaria
 
-## 1. Enfoque de diseño
+## 1. Entidades
 
-El dominio se dividió en 6 áreas funcionales para que el modelo sea defendible en una revisión oral (no es solo "Paciente-Médico-Cita" genérico, sino que cubre el ciclo completo: consulta externa, internamiento, historial clínico, farmacia y facturación):
+- **Paciente**: id_paciente (PK), nombre, apellido, fecha_nacimiento, genero, dpi, telefono, email, direccion, tipo_sangre, es_menor_edad, id_responsable_legal (FK, nullable), activo, fecha_registro
+- **ResponsableLegal**: id_responsable (PK), nombre, apellido, parentesco, dpi, telefono
+- **Medico**: id_medico (PK), nombre, apellido, num_colegiado, telefono, email, id_especialidad (FK)
+- **Especialidad**: id_especialidad (PK), nombre, descripcion
+- **HorarioMedico**: id_horario (PK), id_medico (FK), dia_semana, hora_inicio, hora_fin
+- **Usuario**: id_usuario (PK), username, password_hash, rol [admin|medico|enfermeria|recepcion|paciente], mfa_habilitado, fecha_ultimo_cambio_password, activo
+- **Cita**: id_cita (PK), id_paciente (FK), id_medico (FK), fecha, hora, canal [web|movil], estado [pendiente|confirmada|cancelada|atendida], motivo
+- **Consulta**: id_consulta (PK), id_cita (FK), diagnostico, tratamiento, observaciones, fecha
+- **Receta**: id_receta (PK), id_consulta (FK), fecha_emision, firma_electronica
+- **Medicamento**: id_medicamento (PK), nombre, descripcion, stock, precio
+- **DetalleReceta**: id_detalle (PK), id_receta (FK), id_medicamento (FK), dosis, cantidad
+- **OrdenLaboratorio**: id_orden (PK), id_consulta (FK), id_medico_solicita (FK), fecha_solicitud, estado [pendiente|completada]
+- **ResultadoLaboratorio**: id_resultado (PK), id_orden (FK), tipo_examen, resultado_texto, archivo_pdf, clasificacion [normal|critico], fecha_resultado
+- **ImagenMedica**: id_imagen (PK), id_paciente (FK), id_medico (FK), tipo [radiografia|tomografia|otro], archivo, fecha
+- **Factura**: id_factura (PK), id_paciente (FK), monto_total, fecha, estado [pendiente|pagada], concepto
+- **Notificacion**: id_notificacion (PK), id_usuario (FK), tipo [email|sms], mensaje, fecha_envio, estado [enviado|pendiente|fallido]
+- **Bitacora**: id_bitacora (PK), id_usuario (FK), accion, entidad_afectada, fecha, detalle
 
-1. **Personal clínico** — Especialidad, Medico, Enfermero, Departamento
-2. **Atención ambulatoria** — Cita
-3. **Internamiento** — Habitacion, Cama, Internamiento
-4. **Historial clínico** — HistorialMedico, Receta, Medicamento
-5. **Facturación y seguros** — Factura, DetalleFactura, Seguro
-6. **Acceso al sistema** — Usuario (login con roles)
-
-## 2. Diagrama Mermaid (ER)
-
-Pega esto tal cual en cualquier visor de Mermaid (mermaid.live, la extensión de VS Code, o directamente en Notion si tu plan lo soporta):
+## 2. Diagrama ER (Mermaid)
 
 ```mermaid
 erDiagram
-    ESPECIALIDAD ||--o{ MEDICO : agrupa
-    DEPARTAMENTO ||--o{ MEDICO : emplea
-    DEPARTAMENTO ||--o{ HABITACION : contiene
-    HABITACION ||--o{ CAMA : tiene
-
+    RESPONSABLE_LEGAL ||--o{ PACIENTE : responde_por
     PACIENTE ||--o{ CITA : agenda
-    MEDICO ||--o{ CITA : atiende
-
-    PACIENTE ||--o{ INTERNAMIENTO : ingresa
-    MEDICO ||--o{ INTERNAMIENTO : supervisa
-    CAMA ||--o| INTERNAMIENTO : asignada_a
-
-    PACIENTE ||--o{ HISTORIAL_MEDICO : posee
-    MEDICO ||--o{ HISTORIAL_MEDICO : registra
-    HISTORIAL_MEDICO ||--o{ RECETA : genera
-    MEDICAMENTO ||--o{ RECETA : incluida_en
-
+    PACIENTE ||--o{ IMAGEN_MEDICA : posee
     PACIENTE ||--o{ FACTURA : recibe
-    FACTURA ||--o{ DETALLE_FACTURA : compuesta_de
-    PACIENTE ||--o| SEGURO : posee
-
+    MEDICO ||--o{ CITA : atiende
+    MEDICO }o--|| ESPECIALIDAD : pertenece
+    MEDICO ||--o{ HORARIO_MEDICO : tiene
+    MEDICO ||--o{ IMAGEN_MEDICA : registra
+    MEDICO ||--o{ ORDEN_LABORATORIO : solicita
+    CITA ||--o| CONSULTA : genera
+    CONSULTA ||--o{ RECETA : produce
+    CONSULTA ||--o{ ORDEN_LABORATORIO : origina
+    RECETA ||--o{ DETALLE_RECETA : contiene
+    MEDICAMENTO ||--o{ DETALLE_RECETA : incluido_en
+    ORDEN_LABORATORIO ||--o{ RESULTADO_LABORATORIO : produce
+    USUARIO ||--o{ NOTIFICACION : recibe
+    USUARIO ||--o{ BITACORA : genera
     USUARIO ||--o| MEDICO : es
-    USUARIO ||--o| ENFERMERO : es
+    USUARIO ||--o| PACIENTE : accede_como
 
     PACIENTE {
-        int id PK
+        int id_paciente PK
         string nombre
         string apellido
         date fecha_nacimiento
         string genero
-        string documento_identidad
+        string dpi
         string telefono
         string email
-        string direccion
         string tipo_sangre
+        boolean es_menor_edad
+        int id_responsable_legal FK
+        boolean activo
         date fecha_registro
     }
+    RESPONSABLE_LEGAL {
+        int id_responsable PK
+        string nombre
+        string apellido
+        string parentesco
+        string dpi
+        string telefono
+    }
+    MEDICO {
+        int id_medico PK
+        string nombre
+        string apellido
+        string num_colegiado
+        string telefono
+        int id_especialidad FK
+    }
     ESPECIALIDAD {
-        int id PK
+        int id_especialidad PK
         string nombre
         string descripcion
     }
-    DEPARTAMENTO {
-        int id PK
-        string nombre
-        string ubicacion
-        int jefe_medico_id FK
+    HORARIO_MEDICO {
+        int id_horario PK
+        int id_medico FK
+        string dia_semana
+        time hora_inicio
+        time hora_fin
     }
-    MEDICO {
-        int id PK
-        string nombre
-        string apellido
-        int especialidad_id FK
-        int departamento_id FK
-        string numero_colegiado
-        string telefono
-        string email
-        date fecha_contratacion
-    }
-    ENFERMERO {
-        int id PK
-        string nombre
-        string apellido
-        int departamento_id FK
-        string turno
-        string telefono
-    }
-    HABITACION {
-        int id PK
-        string numero
-        int departamento_id FK
-        string tipo
-    }
-    CAMA {
-        int id PK
-        int habitacion_id FK
-        string codigo
-        string estado
+    USUARIO {
+        int id_usuario PK
+        string username
+        string password_hash
+        string rol
+        boolean mfa_habilitado
+        date fecha_ultimo_cambio_password
+        boolean activo
     }
     CITA {
-        int id PK
-        int paciente_id FK
-        int medico_id FK
-        datetime fecha_hora
-        string motivo
-        string estado
-    }
-    INTERNAMIENTO {
-        int id PK
-        int paciente_id FK
-        int medico_id FK
-        int cama_id FK
-        datetime fecha_ingreso
-        datetime fecha_alta
-        string diagnostico_ingreso
-    }
-    HISTORIAL_MEDICO {
-        int id PK
-        int paciente_id FK
-        int medico_id FK
+        int id_cita PK
+        int id_paciente FK
+        int id_medico FK
         date fecha
+        time hora
+        string canal
+        string estado
+        string motivo
+    }
+    CONSULTA {
+        int id_consulta PK
+        int id_cita FK
         string diagnostico
         string tratamiento
         string observaciones
+        date fecha
+    }
+    RECETA {
+        int id_receta PK
+        int id_consulta FK
+        date fecha_emision
+        string firma_electronica
     }
     MEDICAMENTO {
-        int id PK
+        int id_medicamento PK
         string nombre
         string descripcion
         int stock
-        decimal precio_unitario
+        float precio
     }
-    RECETA {
-        int id PK
-        int historial_medico_id FK
-        int medicamento_id FK
+    DETALLE_RECETA {
+        int id_detalle PK
+        int id_receta FK
+        int id_medicamento FK
         string dosis
-        string frecuencia
-        string duracion
+        int cantidad
+    }
+    ORDEN_LABORATORIO {
+        int id_orden PK
+        int id_consulta FK
+        int id_medico_solicita FK
+        date fecha_solicitud
+        string estado
+    }
+    RESULTADO_LABORATORIO {
+        int id_resultado PK
+        int id_orden FK
+        string tipo_examen
+        string resultado_texto
+        string archivo_pdf
+        string clasificacion
+        date fecha_resultado
+    }
+    IMAGEN_MEDICA {
+        int id_imagen PK
+        int id_paciente FK
+        int id_medico FK
+        string tipo
+        string archivo
+        date fecha
     }
     FACTURA {
-        int id PK
-        int paciente_id FK
+        int id_factura PK
+        int id_paciente FK
+        float monto_total
         date fecha
-        decimal monto_total
-        string estado_pago
-    }
-    DETALLE_FACTURA {
-        int id PK
-        int factura_id FK
+        string estado
         string concepto
-        int cantidad
-        decimal precio_unitario
-        decimal subtotal
     }
-    SEGURO {
-        int id PK
-        int paciente_id FK
-        string aseguradora
-        string numero_poliza
-        string cobertura
+    NOTIFICACION {
+        int id_notificacion PK
+        int id_usuario FK
+        string tipo
+        string mensaje
+        date fecha_envio
+        string estado
     }
-    USUARIO {
-        int id PK
-        string nombre_usuario
-        string password_hash
-        string rol
-        int medico_id FK
-        int enfermero_id FK
+    BITACORA {
+        int id_bitacora PK
+        int id_usuario FK
+        string accion
+        string entidad_afectada
+        date fecha
+        string detalle
     }
 ```
 
-## 3. Decisiones de modelado que puedes explicar en la entrega
+> GitHub renderiza este bloque Mermaid automáticamente en la vista del `.md`. También puede pegarse en [mermaid.live](https://mermaid.live) para exportar como imagen.
 
-- **Cama vs Habitación**: se separaron porque una habitación puede tener varias camas (realismo hospitalario). El internamiento se asocia a la **cama**, no a la habitación completa.
-- **Historial médico independiente de la cita/internamiento**: un registro clínico puede originarse en una consulta ambulatoria o durante un internamiento, así que se modeló como entidad propia en vez de duplicar campos en ambas.
-- **Receta ligada al historial, no al paciente directamente**: evita recetas "flotantes" sin respaldo clínico — trazabilidad total (por qué se prescribió ese medicamento).
-- **Usuario separado de Médico/Enfermero**: el login es un concepto de sistema, no clínico. Así un mismo empleado puede cambiar de rol sin tocar sus datos clínicos, y permite agregar roles como "Recepcionista" o "Administrador" sin forzar una fila médica falsa.
-- **Normalización**: el modelo está en 3FN — no hay atributos derivados almacenados (ej. la edad no se guarda, se calcula desde `fecha_nacimiento`; el `monto_total` de factura podría auditarse contra la suma de `detalle_factura`, pero se mantiene desnormalizado por rendimiento, algo que puedes mencionar como decisión consciente, no error).
+## 3. Reglas de negocio reflejadas en el modelo
+
+- RN01 (doble cita): restricción única en `Cita` sobre (id_medico, fecha, hora).
+- RN02 (receta vigente): `DetalleReceta` solo puede crearse si la `Receta` asociada está vigente.
+- RN03 (no borrado definitivo): `Paciente.activo` y equivalentes en otras entidades clínicas → borrado lógico.
+- RN04 (menor de edad): `Paciente.es_menor_edad = true` obliga a `id_responsable_legal` no nulo.
+- RN05 (médico ve solo sus pacientes): filtro por `id_medico` reforzado por rol en `Usuario`.
+- RN06 (factura con pagos pendientes): validación antes de crear una `Factura` nueva.
+- RN07 (factura pagada no modificable): validación de estado antes de actualizar una `Factura`.
