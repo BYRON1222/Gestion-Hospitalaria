@@ -1,73 +1,53 @@
 # Requerimientos — Sistema de Gestión Hospitalaria
 
-> Nota de stack: los Requerimientos No Funcionales entregados originalmente por el cliente indicaban C#/.NET 9, Oracle Database y Windows Server 2025. Por decisión de curso, este proyecto se documenta e implementa completamente en **Python (FastAPI) y Angular**, con **PostgreSQL/SQLite** como base de datos.
-
 ## 1. Requerimientos Funcionales
 
 ### Pacientes
-- RF01: Los recepcionistas deben poder registrar nuevos pacientes.
-- RF02: Los pacientes menores de edad deben quedar asociados a un responsable legal.
-- RF03: El personal médico debe poder consultar el historial clínico completo de un paciente.
+- RF01: El sistema debe permitir registrar un nuevo paciente (datos personales, tipo de sangre, contacto de emergencia).
+- RF02: El sistema debe permitir buscar pacientes por nombre, DPI/CUI o número de expediente.
+- RF03: El sistema debe permitir editar y dar de baja (lógica) a un paciente.
+- RF04: El sistema debe mostrar el historial clínico completo de un paciente.
 
-### Médicos y horarios
-- RF04: Los administradores podrán configurar los horarios de atención de cada especialista.
+### Médicos
+- RF05: El sistema debe permitir registrar médicos con su especialidad y número de colegiado.
+- RF06: El sistema debe permitir asignar horarios/disponibilidad a cada médico.
 
 ### Citas
-- RF05: El sistema permitirá programar citas médicas desde dispositivos móviles.
-- RF06: Los pacientes podrán solicitar citas mediante una aplicación móvil.
-- RF07: Los pacientes podrán visualizar el estado de sus citas.
-- RF08: El sistema deberá enviar recordatorios automáticos por correo electrónico y SMS.
+- RF07: El sistema debe permitir agendar una cita seleccionando paciente, médico y horario disponible.
+- RF08: El sistema debe validar que no existan cruces de horario para un mismo médico.
+- RF09: El sistema debe permitir cancelar o reprogramar citas.
+- RF10: El sistema debe notificar (en pantalla o email) el estado de la cita.
 
-### Consultas y recetas
-- RF09: Los médicos podrán registrar diagnósticos y tratamientos.
-- RF10: Los médicos deberán firmar electrónicamente las recetas emitidas.
+### Consultas / Historial Clínico
+- RF11: El sistema debe permitir registrar diagnóstico, tratamiento y observaciones asociados a una cita atendida.
+- RF12: El sistema debe permitir generar una receta médica ligada a una consulta.
 
-### Laboratorio
-- RF11: El laboratorio deberá registrar automáticamente los resultados de los exámenes realizados.
-- RF12: El sistema deberá integrarse con el laboratorio clínico externo.
-- RF13: Los pacientes podrán descargar sus resultados de laboratorio en formato PDF.
-- RF14: El sistema deberá enviar una notificación automática al médico cuando un resultado de laboratorio sea clasificado como crítico.
+### Internamiento
+- RF13: El sistema debe permitir registrar el ingreso de un paciente a una habitación disponible.
+- RF14: El sistema debe controlar el estado de las habitaciones (disponible, ocupada, mantenimiento).
+- RF15: El sistema debe registrar la fecha de alta y motivo de egreso.
 
-### Imágenes médicas
-- RF15: El sistema permitirá registrar imágenes médicas como radiografías y tomografías.
+### Medicamentos / Farmacia
+- RF16: El sistema debe llevar el inventario de medicamentos (stock, precio).
+- RF17: El sistema debe descontar stock automáticamente al despachar una receta.
 
-### Farmacia
-- RF16: El módulo de farmacia deberá controlar automáticamente el inventario de medicamentos.
+### Facturación
+- RF18: El sistema debe generar una factura por consulta, internamiento o medicamentos.
+- RF19: El sistema debe permitir consultar el historial de pagos de un paciente.
 
-### Administración / Reportes / Auditoría
-- RF17: Los administradores deberán generar reportes mensuales de ingresos.
-- RF18: El sistema deberá generar indicadores estadísticos para la dirección del hospital.
-- RF19: El sistema deberá registrar una bitácora de todas las acciones realizadas por los usuarios.
+### Seguridad / Usuarios
+- RF20: El sistema debe autenticar usuarios por rol (Administrador, Médico, Enfermería, Recepción).
+- RF21: El sistema debe restringir el acceso a módulos según el rol del usuario.
 
 ## 2. Requerimientos No Funcionales
 
-| Código | Requerimiento del cliente (original) | Adaptación para este proyecto |
+| Código | Requerimiento | Categoría |
 |---|---|---|
-| RNF01 | Responder cualquier consulta en menos de 3 segundos | Se mantiene igual |
-| RNF02 | Funcionar en Chrome, Edge y Firefox | Se mantiene igual |
-| RNF03 | Almacenar información médica en Oracle Database | Adaptado: PostgreSQL (SQLite en desarrollo) |
-| RNF04 | Infraestructura en Windows Server 2025 | Adaptado: entorno Linux/contenedores para el prototipo académico |
-| RNF05 | Disponibilidad 24/7 todo el año | Se documenta como meta de diseño |
-| RNF06 | Registrar una consulta en máximo 5 minutos | Se mantiene igual, validado en el flujo de UI |
-| RNF07 | Autenticación multifactor (MFA) | Se mantiene igual: MFA simplificado en backend |
-| RNF08 | Lenguaje C# sobre .NET 9 | Reemplazado: Python (FastAPI) |
-| RNF09 | Cambio de contraseña cada 90 días | Se mantiene igual |
-| RNF10 | Soportar 800 usuarios concurrentes | Meta de diseño, no probado con carga real |
-| RNF11 | Backups automáticos cada noche | Se mantiene igual |
-| RNF12 | Cumplir legislación de protección de datos personales | Se mantiene igual |
-| RNF13 | Cifrado AES-256 para datos sensibles | Se mantiene igual |
-
-## 3. Reglas de Negocio
-
-- RN01: Ningún paciente podrá tener dos citas médicas a la misma hora con el mismo especialista.
-- RN02: Los medicamentos únicamente podrán ser despachados cuando exista una receta médica vigente.
-- RN03: Ningún usuario podrá eliminar expedientes médicos definitivamente (borrado lógico obligatorio).
-- RN04: Los pacientes menores de edad deberán estar asociados a un responsable legal.
-- RN05: Los médicos únicamente podrán visualizar la información de los pacientes asignados a ellos.
-- RN06: Ninguna factura podrá emitirse si el paciente posee pagos pendientes de consultas anteriores.
-- RN07: Ningún empleado podrá modificar una factura que ya haya sido pagada.
-
-## 4. Restricciones de Proyecto
-
-- Presupuesto máximo referencial del cliente: Q850,000.
-- Plazo máximo deseado por el cliente: 6 meses (ajustado al plazo de entrega del curso para el ejercicio académico).
+| RNF01 | El sistema debe responder en menos de 2 segundos ante operaciones CRUD comunes | Rendimiento |
+| RNF02 | El sistema debe cifrar contraseñas y proteger datos sensibles del paciente | Seguridad |
+| RNF03 | El sistema debe ser responsivo (usable en tablet/escritorio) | Usabilidad |
+| RNF04 | El sistema debe validar datos tanto en frontend como backend | Confiabilidad |
+| RNF05 | El sistema debe mantener disponibilidad 99% en horario hospitalario | Disponibilidad |
+| RNF06 | El código debe seguir arquitectura por capas (separación backend/frontend vía API REST) | Mantenibilidad |
+| RNF07 | El sistema debe registrar logs de acciones críticas (auditoría) | Trazabilidad |
+| RNF08 | La interfaz debe seguir un solo sistema de diseño consistente (paleta, tipografía) | Usabilidad |

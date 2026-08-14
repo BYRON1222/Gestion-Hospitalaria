@@ -4,23 +4,20 @@ Organiza el board en 4 zonas, de izquierda a derecha, para que se lea como una s
 
 ## Zona 1 — Requerimientos
 Post-its agrupados por color, uno por módulo:
-- Azul: Requerimientos Funcionales (RF01–RF19)
-- Amarillo: Requerimientos No Funcionales (RNF01–RNF13)
-- Verde: Reglas de Negocio (RN01–RN07)
-- Gris: Restricciones de Proyecto
+- Azul: Requerimientos Funcionales (RF01–RF21)
+- Amarillo: Requerimientos No Funcionales (RNF01–RNF08)
 
 ## Zona 2 — Riesgos
 Matriz probabilidad × impacto (2×2), con cada riesgo del documento `03_Riesgos.md` ubicado como sticky en el cuadrante correspondiente.
 
 ## Zona 3 — Diagrama ER
-Exporta la imagen del diagrama ER (desde [mermaid.live](https://mermaid.live), pegando el bloque de `01_Diseño_ER.md`) y pégala como imagen central del board, con flechas explicando las relaciones clave (Paciente–Cita, Cita–Consulta, Consulta–Receta/OrdenLaboratorio).
+Exporta la imagen del diagrama ER (desde [mermaid.live](https://mermaid.live), pegando el bloque de `01_Diseño_ER.md`) y pégala como imagen central del board, con flechas explicando las relaciones clave (Paciente–Cita, Cita–Consulta, Consulta–Receta).
 
 ## Zona 4 — Flujo del sistema
 Diagrama de flujo simple mostrando el recorrido de un caso de uso típico:
 
 ```
-Paciente/Responsable → Cita (web/móvil) → Consulta → Receta / Orden de Laboratorio
-→ Resultado (con alerta si es crítico) → Factura
+Paciente llega → Cita → Consulta → Receta/Internamiento → Factura
 ```
 
 ## Notas

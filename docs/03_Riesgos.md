@@ -2,13 +2,11 @@
 
 | Riesgo | Probabilidad | Impacto | Mitigación |
 |---|---|---|---|
-| Entrega no cumplida por tiempo limitado del curso | Alta | Alto | Priorizar MVP (Usuarios, Pacientes, Médicos, Citas, Consultas) antes de módulos secundarios |
-| Cambiar el ER después de generar el backend con IA | Media | Alto | Cerrar el diseño ER antes de generar código |
-| Integración con laboratorio clínico externo no disponible en entorno académico | Alta | Media | Simular la integración con un endpoint interno en vez de un servicio externo real |
-| MFA y firma electrónica añaden complejidad no esencial para la demo | Media | Media | Implementar versión simplificada (código de prueba, hash/token en vez de certificado real) |
-| Confusión entre stack pedido por el cliente (C#/Oracle) y el implementado (Python/Angular) | Media | Media | Documentar explícitamente la adaptación de stack en toda la documentación |
-| Exposición de datos sensibles de pacientes | Baja | Alto | No usar datos reales, cifrar contraseñas y campos sensibles, usar variables de entorno |
-| Reglas de negocio no validadas en backend (solo en frontend) | Media | Alto | Validar cada regla de negocio explícitamente en los servicios del backend |
-| Desincronización entre modelos backend y frontend Angular | Media | Media | Definir contratos de API antes de programar el frontend |
+| Entrega no cumplida por tiempo limitado | Alta | Alto | Priorizar MVP: Pacientes, Citas y Consultas primero; dejar Facturación/Internamiento como extra si sobra tiempo |
+| Diseño ER incompleto que obligue a refactorizar backend | Media | Alto | Cerrar el ER y validarlo antes de generar el backend |
+| Desincronización entre modelos backend y frontend (Angular) | Media | Medio | Definir contratos de API (endpoints y JSON) antes de programar el front |
+| Pérdida de datos por falta de backups en desarrollo | Baja | Alto | Usar SQLite/Postgres local con scripts de seed y respaldo |
+| Fuga o exposición de datos sensibles de pacientes | Baja | Alto | No usar datos reales de personas, cifrar contraseñas, variables de entorno para credenciales |
+| Inconsistencia visual en el frontend | Alta | Medio | Definir guía de estilo específica antes de programar la interfaz |
+| Falta de claridad en requerimientos al momento de programar | Media | Medio | Usar el documento de requerimientos como única fuente de verdad |
 | Errores de sintaxis / generación incompleta al usar herramientas de IA para generar código | Alta | Media | Probar cada módulo (levantar el servidor) inmediatamente después de generarlo, antes de seguir con el siguiente |
-| Límite de uso de herramientas de IA (Cursor) interrumpe el flujo de trabajo | Media | Media | Hacer commits frecuentes para no perder avance; tener plan B de corrección manual |

@@ -1,8 +1,6 @@
 # Sistema de Gestión Hospitalaria
 
-Sistema web para la administración de un hospital. El **diseño** cubre pacientes (incluyendo menores de edad con responsable legal), médicos y horarios, citas, consultas/diagnósticos, recetas, farmacia, laboratorio clínico, imágenes médicas, notificaciones, facturación, reportes y bitácora de auditoría. El **prototipo funcional** de este entregable implementa el núcleo del sistema (ver sección "Alcance implementado" abajo).
-
-> **Nota de stack:** los Requerimientos No Funcionales originales del cliente indicaban C#/.NET 9, Oracle Database y Windows Server 2025. Por decisión de curso, este proyecto se documenta e implementa en **Python (FastAPI) + Angular + SQLite**.
+Sistema web para la administración de un hospital. El **diseño** cubre pacientes, médicos, citas, consultas/diagnósticos, recetas, farmacia, internamiento y facturación. El **prototipo funcional** de este entregable implementa el núcleo del sistema (ver sección "Alcance implementado" abajo).
 
 ## Estructura del repositorio
 
@@ -21,8 +19,8 @@ Gestion-Hospitalaria/
 
 ## Documentación del proyecto
 
-- [Diseño ER](docs/01_Diseño_ER.md) — Modelo de datos completo del sistema (16 entidades) y diagrama Mermaid
-- [Requerimientos](docs/02_Requerimientos.md) — Funcionales, No Funcionales, Reglas de Negocio y Restricciones
+- [Diseño ER](docs/01_Diseño_ER.md) — Modelo de datos completo del sistema y diagrama Mermaid
+- [Requerimientos](docs/02_Requerimientos.md) — Funcionales y No Funcionales
 - [Riesgos](docs/03_Riesgos.md) — Riesgos identificados con probabilidad, impacto y mitigación
 - [Guía de documentación en Notion](docs/04_Documentacion_Notion.md)
 - [Guía del mapa en Miro](docs/05_Mapa_Miro_Guia.md)
@@ -37,14 +35,11 @@ El [Diseño ER](docs/01_Diseño_ER.md) describe el modelo de datos completo pens
 - [x] Citas — listar, crear
 
 **Diseñado pero no implementado en este prototipo** (quedan documentados en el ER y los requerimientos para una siguiente iteración):
-- [ ] Especialidades y horarios médicos
+- [ ] Especialidades
 - [ ] Consultas y recetas
-- [ ] Laboratorio (órdenes y resultados)
+- [ ] Internamiento y habitaciones
 - [ ] Farmacia (inventario de medicamentos)
 - [ ] Facturación
-- [ ] Imágenes médicas
-- [ ] Notificaciones
-- [ ] Bitácora de auditoría
 - [ ] Autenticación de usuarios por rol
 
 ## Cómo correr el proyecto localmente
